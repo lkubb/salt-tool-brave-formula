@@ -1,0 +1,102 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+---
+tool:
+  brave:
+    version: stable                        # stable, beta, nightly (dev was merged with beta)
+    # When using policies.json on Linux, there are two global policy directories, therefore these
+    # settings have to be global there. User-specific settings with policies are possible on MacOS
+    # afaik where policies are installed via a profile.
+    #################################################################################################
+    # provide default values for ExtensionSettings
+    # see https://support.google.com/chrome/a/answer/9867568?hl=en&ref_topic=9023246
+    ext_defaults:
+      installation_mode: normal_installed # When not specified, use this extension installation mode by default.
+      # Setting update_url to something different than specified in the extension's manifest.json
+      # and enabling override of update url will cause even update requests (not just installation)
+      # to be routed there instead of the official source. For local extensions, this is set automatically.
+      override_update_url: False
+      # If you want to update from another repo by default, specify it here.
+      # For local extensions, this is set automatically.
+      update_url: https://clients2.google.com/service/update2/crx
+    # This formula allows using extensions from the local file system.
+    # Those extensions will not be updated automatically from the web. Since we simulate a local repo,
+    # you will need to tell salt explicitly which version you're providing and need to change
+    # the setting when you want to make Brave Browser aware the extension was updated on the next startup.
+    ext_local_source: /some/path # when marking extensions as local, use this path to look for extension.crx by default
+    ext_local_source_sync: true  # when using local source, sync extensions from salt://tool-brave/files/extensions (you should leave that on, unless you know what you're doing)
+    ext_forced: false            # add parsed extension config to forced policies
+    # List of extensions that are to be installed. When using policies, can also be specified there
+    # manually, but this provides convenience. see tool-brave/policies/extensions for list of
+    # available extensions
+    extensions:
+      - bitwarden
+      # If you don't want the default extension settings for your policy, you can specify them
+      # in a mapping like this:
+      - ublock-origin:
+          installation_mode: force_installed
+          runtime_blocked_hosts:
+            - '*://*.supersensitive.bank'
+      # If you don't want an extension to be loaded from the Chrome Web Store (or can't),
+      # but rather from a local directory specified in tool:brave:ext_local_source,
+      # set local to true and make sure to provide e.g. metamask.crx in there. You will
+      # also need to specify the extension version and change it when you update the file
+      # to make Brave Browser aware of it.
+      - metamask:
+          local: true
+          local_version: '10.8.1'
+          blocked_permissions:
+            - geolocation
+          toolbar_pin: force_pinned
+    # Specify global Brave Browser policies here. There are two types, managed (=forced) and
+    # recommended (default, but modifiable by users)
+    policies:
+      forced:
+        SSLErrorOverrideAllowed: false
+        SSLVersionMin: tls1.2
+      recommended:
+        AutofillCreditCardEnabled: false
+        BlockThirdPartyCookies: true
+        BookmarkBarEnabled: true
+        BrowserNetworkTimeQueriesEnabled: false
+        BrowserSignin: 0
+        BuiltInDnsClientEnabled: false
+        MetricsReportingEnabled: false
+        PromotionalTabsEnabled: false
+        SafeBrowsingExtendedReportingEnabled: false
+        SearchSuggestEnabled: false
+        ShowFullUrlsInAddressBar: true
+        SyncDisabled: true
+        UrlKeyedAnonymizedDataCollectionEnabled: false
+        UserFeedbackAllowed: false
+    # Windows-specific settings when using policies, defaults as seen below
+    # To be able to use Group Policies, this formula needs to ensure the ADML/X templates are available.
+    win_gpo_owner: Administrators
+    win_gpo_policy_dir: C:/Windows/PolicyDefinitions
+    win_gpo_lang: en_US
+    # specify where to get AMDL/X templates from. expected:
+    # brave.admx
+    # <win_gpo_lang>
+    # |
+    # ----- brave.adml
+    win_gpo_source: salt://tool-brave/policies/files/gpo/Policy Templates/v97.0.4692.71
+    # specify the source hash to enable verification. by default, verification is skipped (not recommended)
+    win_gpo_source_hash:
+      admx: ef5592fe093595c48d728c19855b62431ab09cb66cfb08b1272a0ecaeba22299
+      adml: 53b61f13c4c5b9492f0b56a625cafbe5dd5c544f9287288e36119ffd312c244c
+
+    defaults:   # user-level defaults
+      flags: []
+
+  users:
+    user:
+      brave:
+        flags:    # Enable Brave Browser flags via Local State file.
+                  # To find the correct syntax, it is best to set them
+                  # and look inside "Local State" (json) browser:enabled_labs_experiments.
+                  # chrome://version will show an overview of enabled flags in the cli version
+                  # chrome://flags shows available flags and highlights those different from default
+                  # mind that cli switches will not be detected on that page
+          - disable-accelerated-2d-canvas
+          - enable-javascript-harmony
+          - enable-webrtc-hide-local-ips-with-mdns@1
