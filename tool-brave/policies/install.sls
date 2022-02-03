@@ -10,16 +10,16 @@ Brave Browser forced policies are applied as Group Policy:
     - computer_policy: {{ brave._policies.forced | json }}
     - adml_language: {{ brave.win_gpo_lang | default('en_US') }}
     - require:
-      - sls: {{ slspath }}.winadm
-      - sls: {{ slspath }}.synclocaladdons
+      - sls: {{ slsdotpath }}.winadm
+      - sls: {{ slsdotpath }}.synclocaladdons
 
 Brave Browser recommended policies are applied as Group Policy:
   lgpo.set:
     - user_policy: {{ brave._policies.recommended | json }}
     - adml_language: {{ brave.win_gpo_lang | default('en_US') }}
     - require:
-      - sls: {{ slspath }}.winadm
-      - sls: {{ slspath }}.synclocaladdons
+      - sls: {{ slsdotpath }}.winadm
+      - sls: {{ slsdotpath }}.synclocaladdons
 
 Group policies are updated:
   cmd.run:
