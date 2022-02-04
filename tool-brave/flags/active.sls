@@ -14,7 +14,7 @@ Brave Browser has generated the default profile for user {{ user.name }}:
         killall "$(basename '{{ brave._bin }}')"
     - runas: {{ user.name }}
     - unless:
-      - test -d {{ user._brave.confdir }}/Default
+      - test -d '{{ user._brave.confdir }}/Default'
 
 Brave Browser flags are active for user {{ user.name }}:
   file.serialize:
