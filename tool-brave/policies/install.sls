@@ -33,6 +33,7 @@ Group policies are updated:
 Brave Browser forced policies are applied as profile:
   macprofile.installed:
     - name: salt.tool.com.brave.Browser
+    - displayname: Brave Browser configuration (salt-tool)
     - description: brave default configuration managed by Salt state tool-brave.policies
     - organization: salt.tool
     - removaldisallowed: False
