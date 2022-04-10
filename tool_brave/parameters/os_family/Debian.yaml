@@ -1,0 +1,52 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+#
+# Set values specific to:
+#   salt['config.get']('os_family') == Debian.
+#
+# You just need to add the key:values for this `os_family` that differ
+# from `defaults.yaml` + `<osarch>.yaml`.
+#
+# If you do not need to provide defaults via the `os_family` config,
+# you can remove this file or provide at least an empty dict, e.g.
+# values: {}
+---
+values:
+  lookup:
+    pkg:
+      manager: apt
+      repos:
+        stable:
+          humanname: Brave Browser  # yamllint disable rule:line-length
+          name: deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main
+          file: /etc/apt/sources.list.d/brave-browser-release.list
+          keyring:
+            file: /usr/share/keyrings/brave-browser-archive-keyring.gpg
+            source: https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+            source_hash: 48b3ec34ec0a874126c559eaff94602aab8b1f25b4312a368676ab08380ee236
+        beta:
+          humanname: Brave Browser Beta
+          name: deb [signed-by=/usr/share/keyrings/brave-browser-beta-keyring.gpg arch=amd64] https://brave-browser-apt-beta.s3.brave.com/ stable main
+          file: /etc/apt/sources.list.d/brave-browser-beta.list
+          keyring:
+            file: /usr/share/keyrings/brave-browser-beta-keyring.gpg
+            source: https://brave-browser-apt-beta.s3.brave.com/brave-browser-beta-archive-keyring.gpg
+            source_hash: ea6c27e9d8bf6f899014a9cb014741b2d874180f5eebcf899b98e79b7c87f05e
+        nightly:
+          humanname: Brave Browser Nightly
+          name: deb [signed-by=/usr/share/keyrings/brave-browser-nightly-keyring.gpg arch=amd64] https://brave-browser-apt-nightly.s3.brave.com/ stable main
+          file: /etc/apt/sources.list.d/brave-browser-nightly.list
+          keyring:
+            file: /usr/share/keyrings/brave-browser-nightly-keyring.gpg
+            source: https://brave-browser-apt-nightly.s3.brave.com/brave-browser-nightly-archive-keyring.gpg
+            # it's the same as beta
+            source_hash: ea6c27e9d8bf6f899014a9cb014741b2d874180f5eebcf899b98e79b7c87f05e
+
+# rationale for signed-by directive (https://wiki.debian.org/DebianRepository/UseThirdParty):
+#     The reason we point to a file instead of a fingerprint is that the latter forces the user
+#     to add the key to the global SecureApt trust anchor in /etc/apt/trusted.gpg.d, which would
+#     cause the system to accept signatures from the third-party keyholder on all other
+#     repositories configured on the system that don't have a signed-by option
+#     (including the official Debian repositories).
+
+...

@@ -1,0 +1,40 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+#
+# Set values specific to:
+#   salt['config.get']('os_family') == Suse.
+#
+# You just need to add the key:values for this `os_family` that differ
+# from `defaults.yaml` + `<osarch>.yaml`.
+#
+# If you do not need to provide defaults via the `os_family` config,
+# you can remove this file or provide at least an empty dict, e.g.
+# values: {}
+---
+values:
+  lookup:
+    pkg:
+      manager: zypper
+      repos:
+        stable:
+          humanname: Brave Browser
+          name: brave-browser-rpm-release.s3.brave.com_x86_64_
+          baseurl: https://brave-browser-rpm-release.s3.brave.com/x86_64/
+          key_url: https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+          gpgcheck: 1
+          gpgautoimport: true
+        beta:
+          humanname: Brave Browser Beta
+          name: brave-browser-rpm-beta.s3.brave.com_x86_64_
+          baseurl: https://brave-browser-rpm-beta.s3.brave.com/x86_64/
+          key_url: https://brave-browser-rpm-beta.s3.brave.com/brave-core-nightly.asc
+          gpgcheck: 1
+          gpgautoimport: true
+        nightly:
+          humanname: Brave Browser Nightly
+          name: brave-browser-rpm-nightly.s3.brave.com_x86_64_
+          baseurl: https://brave-browser-rpm-nightly.s3.brave.com/x86_64/
+          key_url: https://brave-browser-rpm-nightly.s3.brave.com/brave-core-nightly.asc
+          gpgcheck: 1
+          gpgautoimport: true
+...

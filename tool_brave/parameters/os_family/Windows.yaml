@@ -1,0 +1,48 @@
+# -*- coding: utf-8 -*-
+# vim: ft=yaml
+#
+# Set values specific to:
+#   salt['config.get']('os') == Windows.
+#
+# You just need to add the key:values for this `os` that differ
+# from `defaults.yaml` + `<osarch>.yaml` + `<os_family>.yaml`.
+#
+# If you do not need to provide defaults via the `os` config,
+# you can remove this file or provide at least an empty dict, e.g.
+# values: {}
+---
+values:
+  lookup:
+    paths:
+      beta:
+        bin: C:/Program Files/BraveSoftware/Brave-Browser-Beta/Application/brave.exe
+        installation: C:/Program Files/BraveSoftware/Brave-Browser-Beta
+        confdir: AppData/Local/BraveSoftware/Brave-Browser-Beta/User Data
+      nightly:
+        bin: C:/Program Files/BraveSoftware/Brave-Browser-Nightly/Application/brave.exe
+        installation: C:/Program Files/BraveSoftware/Brave-Browser-Nightly
+        confdir: AppData/Local/BraveSoftware/Brave-Browser-Nightly/User Data
+      stable:
+        bin: C:/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe
+        installation: C:/Program Files/BraveSoftware/Brave-Browser
+        confdir: AppData/Local/BraveSoftware/Brave-Browser/User Data
+    pkg:
+      beta:
+        name: brave
+        pre: true
+      nightly:
+        name: brave-nightly
+        pre: true
+      stable:
+        name: brave
+        pre: false
+      manager: chocolatey
+    win_gpo:
+      lang: en_US
+      owner: Administrators
+      policy_dir: C:/Windows/PolicyDefinitions
+      source: https://github.com/Prowler2/Brave-Browser-GPO-Policy/archive/refs/heads/master.zip  # yamllint disable-line rule:line-length
+      source_hash: 05242aefe91000370a303a089b8f6fab2b9d7c155ba50c38bd826ae07708e183
+      source_path: Policy Templates/v97.0.4692.71
+      # source: https://dl.google.com/dl/edgedl/chrome/policy/policy_templates.zip
+...

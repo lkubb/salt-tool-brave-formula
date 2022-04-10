@@ -1,3 +1,0 @@
-[submodule "tool-brave/policies/files/gpo"]
-	path = tool-brave/policies/files/gpo
-	url = https://github.com/Prowler2/Brave-Browser-GPO-Policy
