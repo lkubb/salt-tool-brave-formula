@@ -15,6 +15,7 @@ include:
 
 {%- else %}
 
+
 {%-   for reponame, repodata in brave.lookup.pkg.repos.items() %}
 
 Brave Browser {{ reponame }} repository is absent:
