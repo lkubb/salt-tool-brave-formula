@@ -9,20 +9,33 @@ include:
   - {{ sls_package_install }}
 
 
-{%- for user in brave.users | selectattr('brave.flags', 'defined') | selectattr('brave.flags') %}
+{%- for user in brave.users %}
 
-Brave Browser has generated the default profile for user '{{ user.name }}':
+Brave Browser has been run once for user '{{ user.name }}':
   cmd.run:
     - name: |
-        "{{ brave._bin }}" &
-        while [ ! -d '{{ user._brave.confdir | path_join('Default') }}' ]; do
-          sleep 1;
-        done
-        sleep 1
-        killall "$(basename '{{ brave._bin }}')"
+        "{{ brave._bin }}"
     - runas: {{ user.name }}
+    - bg: true
+    - timeout: 20
     - require:
       - sls: {{ sls_package_install }}
-    - unless:
-      - test -d '{{ user._brave.confdir | path_join('Default') }}'
+    - creates:
+      - {{ user._brave.confdir | path_join("Default") }}
+
+Brave Browser has generated the default profile for user '{{ user.name }}':
+  file.exists:
+    - name: {{ user._brave.confdir | path_join("Default") }}
+    - retry:
+        attempts: 10
+        interval: 1
+    - require:
+      - Brave Browser has been run once for user '{{ user.name }}'
+
+Brave Browser is not running for user '{{ user.name }}':
+  process.absent:
+    - name: {{ salt["file.basename"](brave._bin) }}
+    - user: {{ user.name }}
+    - onchanges:
+      - Brave Browser has been run once for user '{{ user.name }}'
 {%- endfor %}
