@@ -74,6 +74,8 @@ values:
     paths:
       confdir: '.config/brave-browser'
       conffile: 'config'
+      xdg_dirname: 'brave-browser'
+      xdg_conffile: 'config'
     rootgroup: root
   map_jinja:
     sources:

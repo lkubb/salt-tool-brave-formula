@@ -1,23 +1,22 @@
-# -*- coding: utf-8 -*-
 # vim: ft=sls
 
-{%- set tplroot = tpldir.split('/')[0] %}
+{%- set tplroot = tpldir.split("/")[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as brave with context %}
 
-{%- set require_local_sync = brave.get('_local_extensions') | to_bool
+{%- set require_local_sync = brave.get("_local_extensions") | to_bool
                          and brave.extensions.local.sync | to_bool %}
 
-{%- if 'Windows' == grains.kernel or require_local_sync %}
+{%- if grains.kernel == "Windows" or require_local_sync %}
 include:
 {%-   if require_local_sync %}
   - {{ tplroot }}.local_addons.clean
 {%-   endif %}
-{%-   if 'Windows' == grains.kernel %}
+{%-   if grains.kernel == "Windows" %}
   - {{ slsdotpath }}.winadm.clean
 {%-   endif %}
 {%- endif %}
 
-{%- if 'Windows' == grains.kernel %}
+{%- if grains.kernel == "Windows" %}
 
 Brave Browser forced policies are removed from Group Policy:
   lgpo.set:
@@ -42,7 +41,7 @@ Group policies are updated (Brave):
       - Brave Browser forced policies are removed from Group Policy
       - Brave Browser recommended policies are removed from Group Policy
 
-{%- elif 'Darwin' == grains.kernel %}
+{%- elif grains.kernel == "Darwin" %}
 
 Brave Browser forced policy profile cannot be silently removed:
   test.show_notification:

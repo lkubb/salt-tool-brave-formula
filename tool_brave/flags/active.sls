@@ -1,21 +1,20 @@
-# -*- coding: utf-8 -*-
 # vim: ft=sls
 
-{%- set tplroot = tpldir.split('/')[0] %}
+{%- set tplroot = tpldir.split("/")[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as brave with context %}
 
 include:
   - {{ tplroot }}.default_profile
 
 
-{%- for user in brave.users | selectattr('brave.flags', 'defined') | selectattr('brave.flags') %}
+{%- for user in brave.users | selectattr("brave.flags", "defined") | selectattr("brave.flags") %}
 
 Brave Browser flags are active for user {{ user.name }}:
   file.serialize:
-    - name: {{ user._brave.confdir | path_join('Local State') }}
+    - name: {{ user._brave.confdir | path_join("Local State") }}
     - serializer: json
     - merge_if_exists: true
-    - dataset: {{ {'browser': {'enabled_labs_experiments': user.brave.flags } } |  json }}
+    - dataset: {{ {"browser": {"enabled_labs_experiments": user.brave.flags } } |  json }}
     - makedirs: true
     - mode: '0600'
     - dir_mode: '0700'

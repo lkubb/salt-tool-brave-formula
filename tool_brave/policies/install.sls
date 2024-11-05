@@ -1,27 +1,26 @@
-# -*- coding: utf-8 -*-
 # vim: ft=sls
 
-{%- set tplroot = tpldir.split('/')[0] %}
+{%- set tplroot = tpldir.split("/")[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as brave with context %}
 
-{%- set require_local_sync = brave.get('_local_extensions') | to_bool
+{%- set require_local_sync = brave.get("_local_extensions") | to_bool
                          and brave.extensions.local.sync | to_bool %}
 
-{%- if 'Windows' == grains.kernel or require_local_sync %}
+{%- if grains.kernel == "Windows" or require_local_sync %}
 
 include:
 {%-   if require_local_sync %}
   - {{ tplroot }}.local_extensions
 {%-   endif %}
-{%-   if 'Windows' == grains.kernel %}
+{%-   if grains.kernel == "Windows" %}
   - {{ slsdotpath }}.winadm
 {%-   endif %}
 {%- endif %}
 
 
-{%- if brave.get('_policies') %}
-{%-   if 'Windows' == grains.kernel %}
-{%-     if brave._policies.get('forced') %}
+{%- if brave.get("_policies") %}
+{%-   if grains.kernel == "Windows" %}
+{%-     if brave._policies.get("forced") %}
 
 Brave Browser forced policies are applied as Group Policy:
   lgpo.set:
@@ -36,7 +35,7 @@ Brave Browser forced policies are applied as Group Policy:
 {%-       endif %}
 {%-     endif %}
 
-{%-     if brave._policies.get('recommended') %}
+{%-     if brave._policies.get("recommended") %}
 
 Brave Browser recommended policies are applied as Group Policy:
   lgpo.set:
@@ -56,8 +55,8 @@ Group policies are updated (Brave):
     - name: gpupdate /wait:0
     - watch: []
 
-{%-   elif 'Darwin' == grains.kernel %}
-{%-     if brave._policies.get('forced') %}
+{%-   elif grains.kernel == "Darwin" %}
+{%-     if brave._policies.get("forced") %}
 
 Brave Browser forced policies are applied as profile:
   macprofile.installed:
@@ -75,7 +74,7 @@ Brave Browser forced policies are applied as profile:
 {%-       endif %}
 {%-     endif %}
 
-{%-     if brave._policies.get('recommended') %}
+{%-     if brave._policies.get("recommended") %}
 
 Brave Browser recommended policies are applied as plist:
   file.serialize:
@@ -99,7 +98,7 @@ MacOS plist cache is updated (Brave):
 {%-     endif %}
 
 {%-   else %}
-{%-     if brave._policies.get('forced') %}
+{%-     if brave._policies.get("forced") %}
 
 Brave Browser enforced policies are synced to json file:
   file.serialize:
@@ -116,7 +115,7 @@ Brave Browser enforced policies are synced to json file:
 {%-       endif %}
 {%-     endif %}
 
-{%-     if brave._policies.get('recommended') %}
+{%-     if brave._policies.get("recommended") %}
 
 Brave Browser recommended policies are synced to json file:
   file.serialize:
