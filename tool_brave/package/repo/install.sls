@@ -2,7 +2,7 @@
 
 {%- set tplroot = tpldir.split("/")[0] %}
 {%- from tplroot ~ "/map.jinja" import mapdata as brave with context %}
-{%- from tplroot ~ "/libtofs.jinja" import files_switch with context %}
+{%- from tplroot ~ "/libtofsstack.jinja" import files_switch with context %}
 
 
 {%- if grains.os in ["Debian", "Ubuntu"] %}
@@ -23,10 +23,14 @@ Ensure Brave Browser APT repository can be managed:
 Brave Browser {{ reponame }} signing key is available:
   file.managed:
     - name: {{ brave.lookup.pkg.repos[reponame].keyring.file }}
-    - source: {{ files_switch([salt["file.basename"](brave.lookup.pkg.repos[reponame].keyring.file)],
-                          lookup="Brave Browser " ~ reponame ~ " signing key is available")
+    - source: {{ (
+                    files_switch(
+                      [salt["file.basename"](brave.lookup.pkg.repos[reponame].keyring.file)],
+                      lookup="Brave Browser {} signing key is available".format(reponame),
+                      config=brave,
+                    ) | load_json + [brave.lookup.pkg.repos[reponame].keyring.source]
+                 ) | json
               }}
-      - {{ brave.lookup.pkg.repos[reponame].keyring.source }}
     - source_hash: {{ brave.lookup.pkg.repos[reponame].keyring.source_hash }}
     - user: root
     - group: {{ brave.lookup.rootgroup }}

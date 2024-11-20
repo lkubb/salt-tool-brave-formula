@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "salt_tool_brave"
+name = "tool_brave_formula"
 version = "1.0.0"
 description = "Saltstack states to manage Brave Browser"
 authors = ["lkubb"]

@@ -1,5 +1,5 @@
-Welcome to salt-tool-brave-formula's documentation!
-===================================================
+Welcome to tool-brave-formula's documentation!
+==============================================
 
 .. toctree::
    :maxdepth: 2
